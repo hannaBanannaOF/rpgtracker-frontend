@@ -1,0 +1,37 @@
+{
+    "menu": {
+        "link_home": "Início",
+        "link_sessions": "Minhas sessões",
+        "link_sheets": "Minhas fichas",
+        "theme_switch": {
+            "title": "Modo escuro",
+            "label_on": "LIG",
+            "label_off": "DES"
+        }
+    },
+    "home": {
+        "next_session": {
+            "title": "Próxima sessão"
+        },
+        "calendar": {
+            "title": "calendário",
+            "button_prev": "Anterior",
+            "button_next": "Próximo"
+        }
+    },
+    "sessions": {
+        "list": {
+            "title": "Minhas sessões"
+        }
+    },
+    "sheets": {
+        "list": {
+            "title": "Minhas fichas"
+        },
+        "detail": {
+            "basic_info": "Informações básicas",
+            "character_name": "Nome do personagem",
+            "rpg_info": "Informações adicionais (Específicas do RPG)"
+        }
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "menu": {
+        "link_home": "Home",
+        "link_sessions": "My sessions",
+        "link_sheets": "My character sheets",
+        "theme_switch": {
+            "title": "Dark mode",
+            "label_on": "ON",
+            "label_off": "OFF"
+        }
+    },
+    "home": {
+        "next_session": {
+            "title": "Next session"
+        },
+        "calendar": {
+            "title": "Calendar",
+            "button_prev": "Previous",
+            "button_next": "Next"
+        }
+    },
+    "sessions": {
+        "list": {
+            "title": "My sessions"
+        }
+    },
+    "sheets": {
+        "list": {
+            "title": "My character sheets"
+        },
+        "detail": {
+            "basic_info": "Basic info",
+            "character_name": "Character name",
+            "rpg_info": "Additional info (RPG specific)"
+        }
+    }
+}

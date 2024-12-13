@@ -1,0 +1,15 @@
+:root {
+    --fc-button-bg-color: var(--mantine-color-rpgtracker-teal-9);
+    --fc-button-border-color: var(--mantine-color-rpgtracker-teal-9);
+    --fc-button-hover-bg-color: var(--mantine-color-rpgtracker-teal-filled-hover);
+    --fc-button-hover-border-color: var(--mantine-color-rpgtracker-teal-filled-hover);
+    --fc-button-active-bg-color: var(--mantine-color-rpgtracker-teal-filled-hover);
+    --fc-button-active-border-color: var(--mantine-color-rpgtracker-teal-filled-hover);
+    --fc-today-bg-color: transparent;
+    --fc-event-bg-color: var(--mantine-color-rpgtracker-teal-9);
+    --fc-event-border-color: var(--mantine-color-rpgtracker-teal-9);
+}
+
+.fc .fc-scrollgrid-liquid {
+    height: 60%;
+}
