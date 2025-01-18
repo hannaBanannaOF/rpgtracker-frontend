@@ -2,10 +2,11 @@
 
 import { TRpgKind } from "@/src/shared/enums";
 import { ListTile } from "@/src/components/listtile/listtile";
-import { Alert, Flex, Loader, Text, Title } from "@mantine/core";
+import { Alert, Box, Flex, Loader, LoadingOverlay, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
+import { useState } from "react";
 
 type NextSession = {
   slug: string;
@@ -26,7 +27,7 @@ const getNextSession = async () => {
   }) as NextSession;
 }
 
-export function NextSession() {
+export function NextSession({ setLoadingHome } : { setLoadingHome: (state: boolean)=>void }) {
   const t = useTranslations('home.next_session');
   const format = useFormatter();
   const router = useRouter();
@@ -41,15 +42,18 @@ export function NextSession() {
       <Loader type="bars"/>  
     </Flex>}
     {data && <ListTile 
-      title={data.name} 
-      icon={TRpgKind.getIcon(data.system)} 
-      iconTooltipLabel={TRpgKind.getLabel(data.system)} 
-      subTitle={format.dateTime(new Date(data.date), 'long')}
-      badgeValue={data.dmed ? "DMed" : undefined}
-      onClick={() => router.push(`/session/${data.slug}`)}
-    />}
+        title={data.name} 
+        icon={TRpgKind.getIcon(data.system)} 
+        iconTooltipLabel={TRpgKind.getLabel(data.system)} 
+        subTitle={format.dateTime(new Date(data.date), 'long')}
+        badgeValue={data.dmed ? "DMed" : undefined}
+        onClick={() => {
+          setLoadingHome(true);
+          router.push(`/session/${data.slug}`);
+        }}
+      />}
     {!isFetching && !data && <Alert variant="light" color="red" mt="md">
-      <Text size="md">Não existem próximas sessões com data definida</Text>  
+      <Text size="md">{t('no_data')}</Text>  
     </Alert>}
   </>
 }

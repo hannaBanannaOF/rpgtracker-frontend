@@ -7,31 +7,173 @@
             "title": "Modo escuro",
             "label_on": "LIG",
             "label_off": "DES"
+        },
+        "ghostbusters": {
+            "main": "Ghostbusters",
+            "ecto_one": "Ecto one",
+            "ecto_one_upgrades": "Upgrades do Ecto one",
+            "equipment": "Equipamento",
+            "equipment_upgrades": "Upgrades de equipamento",
+            "talents": "Talentos"
         }
+    },
+    "deleteModal": {
+        "title": "Excluir recurso",
+        "delete_confirm": "Deseja realmente excluir o recurso {resource}?",
+        "this_action_cant_be_undone": "Essa ação é permanente e não pode ser desfeita!",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
     },
     "home": {
         "next_session": {
-            "title": "Próxima sessão"
+            "title": "Próxima sessão",
+            "no_data": "Não existem próximas sessões com data definida"
         },
         "calendar": {
-            "title": "calendário",
+            "title": "Calendário",
             "button_prev": "Anterior",
             "button_next": "Próximo"
         }
     },
     "sessions": {
         "list": {
-            "title": "Minhas sessões"
+            "title": "Minhas sessões",
+            "no_data": "Nenhuma sessão encontrada"
+        },
+        "detail": {
+            "sheets": "Fichas",
+            "my_sheet": "Minha ficha",
+            "set_in_play": "Jogando",
+            "forbidden": "Você não tem permissão para visualizar essa mesa!",
+            "playing": "Sessão iniciada!",
+            "not_playing": "Sessão encerrada!",
+            "schedule_session": "Agendar sessão",
+            "scheduled_session": "Sessão agendada!",
+            "scheduled_session_error": "Não foi possível agendar a sessão!",
+            "data_cant_be_null": "A data do agendamento não pode ser vazia!",
+            "date_need_to_be_after_today": "A data/hora de agendamento deve ser maior que a data/hora atual!",
+            "schedule_valid_datetime": "Informe uma data/hora de agendamento valida!",
+            "schedule": "Agendar",
+            "schedule_datetime": "Data/hora",
+            "gb": {
+                "has_headquarters": "Tem quartel general",
+                "no_headquarters": "Sem quartel general",
+                "enable_hq": "Habilitar QG",
+                "disable_hq": "Desabilitar QG",
+                "team_savings": "Saldo do time",
+                "containment_grid_load": "Carga da grade de contenção"
+            }
         }
     },
     "sheets": {
         "list": {
-            "title": "Minhas fichas"
+            "title": "Minhas fichas",
+            "no_data": "Nenhuma ficha encontrada"
         },
         "detail": {
             "basic_info": "Informações básicas",
             "character_name": "Nome do personagem",
-            "rpg_info": "Informações adicionais (Específicas do RPG)"
+            "refetch_sheet_data": "Recarregar ficha",
+            "forbidden": "Você não tem permissão para visualizar essa ficha!",
+            "gb" : {
+                "personal_info": "Informações pessoais",
+                "goal": "Meta",
+                "residence": "Residência",
+                "phone": "Telefone",
+                "talents": "Talentos",
+                "brains": "Brains",
+                "muscle": "Muscle",
+                "moves": "Moves",
+                "cool": "Cool",
+                "brownie_points": "Pontos de brownie"
+            }
+        }
+    },
+    "ghostbusters": {
+        "ecto_one": {
+            "title": "Ecto one",
+            "no_data": "Sem dados!",
+            "new": "Adicionar",
+            "details": {
+                "name": "Nome",
+                "carryWeight": "Capacidade de carga",
+                "seats": "Assentos",
+                "cost": "Custo",
+                "units": "{count, plural, =1 {unidade} =0 {Sem capacidade} other {unidades}}",
+                "delete": {
+                    "button": "Excluir",
+                    "success": "Ecto one excluído com sucesso!",
+                    "error": "Falha ao excluir ecto one!"
+                }
+            },
+            "form": {
+                "title": "Novo ecto one",
+                "submit": "Salvar",
+                "name": {
+                    "label": "Nome",
+                    "required": "O nome não pode ser vazio!"
+                },
+                "carryWeight": {
+                    "label": "Capacidade de carga",
+                    "units": "{count, plural, =1 {unidade} other {unidades}}",
+                    "required": "Capacidade de carga não pode ser vazio!",
+                    "must_be_number": "Capacidade de carga deve ser um número!",
+                    "min_value": "Capacidade de carga deve ser maior que 0!"
+                },
+                "seats": {
+                    "label": "Assentos",
+                    "required": "Assentos não pode ser vazio!",
+                    "must_be_number": "Assentos deve ser um número!",
+                    "min_value": "Assentos deve ser maior que 0!"
+                },
+                "cost": {
+                    "label": "Custo",
+                    "required": "O custo não pode ser vazio!",
+                    "must_be_number": "O custo deve ser um número!",
+                    "min_value": "O custo deve ser maior que 0!"
+                },
+                "notifications": {
+                    "success": "Ecto one salvo com sucesso!",
+                    "error": "Erro ao salvar ecto one"
+                }
+                
+            }
+        },
+        "ecto_one_upgrades": {
+            "title": "Upgrades do Ecto one",
+            "no_data": "Sem dados!",
+            "details": {
+                "name": "Nome",
+                "cost": "Custo",
+                "description": "Descrição"
+            }
+        },
+        "equipment": {
+            "title": "Equipamentos",
+            "no_data": "Sem dados!",
+            "details": {
+                "name": "Nome",
+                "weight": "Peso",
+                "cost": "Custo",
+                "units": "unidades"
+            }
+        },
+        "equipment_upgrades": {
+            "title": "Upgrade de equipamentos",
+            "no_data": "Sem dados!",
+            "details": {
+                "name": "Nome",
+                "cost": "Custo",
+                "description": "Descrição"
+            }
+        },
+        "talents": {
+            "title": "Talentos",
+            "no_data": "Sem dados!",
+            "details": {
+                "name": "Nome",
+                "trait": "Traço"
+            }
         }
     }
 }

@@ -7,11 +7,27 @@
             "title": "Dark mode",
             "label_on": "ON",
             "label_off": "OFF"
+        },
+        "ghostbusters": {
+            "main": "Ghostbusters",
+            "ecto_one": "Ecto one",
+            "ecto_one_upgrades": "Ecto one upgrades",
+            "equipment": "Equipment",
+            "equipment_upgrades": "Equipment upgrades",
+            "talents": "Talents"
         }
+    },
+    "deleteModal": {
+        "title": "Excluir recurso",
+        "delete_confirm": "Are you sure you want to delete the resource {resource}?",
+        "this_action_cant_be_undone": "This action can't be undone!",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
     },
     "home": {
         "next_session": {
-            "title": "Next session"
+            "title": "Next session",
+            "no_data": "There are no upcoming sessions with a defined date"
         },
         "calendar": {
             "title": "Calendar",
@@ -21,17 +37,142 @@
     },
     "sessions": {
         "list": {
-            "title": "My sessions"
+            "title": "My sessions",
+            "no_data": "No sessions found"
+        },
+        "detail": {
+            "sheets": "Character sheets",
+            "my_sheet": "My character sheet",
+            "set_in_play": "In play",
+            "forbidden": "You don't have permission to view this session!",
+            "playing": "Session started!",
+            "not_playing": "Session Stopped!",
+            "schedule_session": "Schedule session",
+            "scheduled_session": "Session scheduled!",
+            "scheduled_session_error": "Unable to schedule session!",
+            "data_cant_be_null": "Schedule data can't be null!",
+            "date_need_to_be_after_today": "Schedule date/time needs to be after the actual date/time!",
+            "schedule_valid_datetime": "Type a valid schedulr date/time!",
+            "schedule": "Schedule",
+            "schedule_datetime": "Date/time",
+            "gb": {
+                "has_headquarters": "Has headquarters",
+                "no_headquarters": "No headquarters",
+                "enable_hq": "Enable HQ",
+                "disable_hq": "Disable HQ",
+                "team_savings": "Team savings",
+                "containment_grid_load": "Containment grid load"
+            }
         }
     },
     "sheets": {
         "list": {
-            "title": "My character sheets"
+            "title": "My character sheets",
+            "no_data": "No character sheet found"
         },
         "detail": {
             "basic_info": "Basic info",
             "character_name": "Character name",
-            "rpg_info": "Additional info (RPG specific)"
+            "refetch_sheet_data": "Refetch character sheet data",
+            "forbidden": "You don't have permission to view this character sheet!",
+            "gb" : {
+                "personal_info": "Personal info",
+                "goal": "Goal",
+                "residence": "Residence",
+                "phone": "Phone",
+                "talents": "Talents",
+                "brains": "Brains",
+                "muscle": "Muscle",
+                "moves": "Moves",
+                "cool": "Cool",
+                "brownie_points": "Brownie points"
+            }
+        }
+    },
+    "ghostbusters": {
+        "ecto_one": {
+            "title": "Ecto one",
+            "no_data": "No data!",
+            "new": "Add",
+            "details": {
+                "name": "Name",
+                "carryWeight": "Carry weight",
+                "seats": "Seats",
+                "cost": "Cost",
+                "units": "{count, plural, =1 {unit} =0 {No capacity} other {units}}",
+                "delete": {
+                    "button": "Delete",
+                    "success": "Ecto one deleted sucessfully!",
+                    "error": "unable to delete ecto one!"
+                }
+            },
+            "form": {
+                "title": "New ecto one",
+                "submit": "Save",
+                "name": {
+                    "label": "Name",
+                    "required": "Name can't be empty!"
+                },
+                "carryWeight": {
+                    "label": "Carry weight",
+                    "units": "{count, plural, =1 {unit} other {units}}",
+                    "required": "Carry weight can't be empty!",
+                    "must_be_number": "Carry weight must be a number!",
+                    "min_value": "Carry weight must be greater 0!"
+                },
+                "seats": {
+                    "label": "Seats",
+                    "required": "Seats can't be empty!",
+                    "must_be_number": "Seats must be a number!",
+                    "min_value": "Seats must be greater than 0!"
+                },
+                "cost": {
+                    "label": "Cost",
+                    "required": "Cost can't be empty!",
+                    "must_be_number": "Cost must be a number!",
+                    "min_value": "Cost must be greater than 0!"
+                },
+                "notifications": {
+                    "success": "Ecto one sucessfully saved!",
+                    "error": "Error saving ecto one!"
+                }
+            }
+        },
+        "ecto_one_upgrades": {
+            "title": "Ecto one upgrades",
+            "no_data": "No data!",
+            "details": {
+                "name": "Name",
+                "cost": "Cost",
+                "description": "Description"
+            }
+        },
+        "equipment": {
+            "title": "Equipment",
+            "no_data": "No data!",
+            "details": {
+                "name": "Name",
+                "weight": "Weight",
+                "cost": "Cost",
+                "units": "units"
+            }
+        },
+        "equipment_upgrades": {
+            "title": "Equipment upgrades",
+            "no_data": "No data!",
+            "details": {
+                "name": "Name",
+                "cost": "Cost",
+                "description": "Description"
+            }
+        },
+        "talents": {
+            "title": "Talents",
+            "no_data": "Sem dados!",
+            "details": {
+                "name": "Name",
+                "trait": "Trait"
+            }
         }
     }
 }

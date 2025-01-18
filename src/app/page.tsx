@@ -1,11 +1,8 @@
 import { Divider } from "@mantine/core";
 import { NextSession } from "./nextsession";
 import { Calendar } from "./calendar";
+import { Home } from "./home";
 
-export default function Home() {
-  return <>
-    <NextSession />
-    <Divider my="md"/>
-    <Calendar />
-  </>;
+export default function HomePage() {
+  return <Home />
 }

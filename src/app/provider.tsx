@@ -5,6 +5,11 @@ import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-quer
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 import { Shell } from "../components/shell/shell";
+import { Notifications } from '@mantine/notifications';
+import { DatesProvider } from "@mantine/dates";
+import { useLocale } from "next-intl";
+import 'dayjs/locale/en';
+import 'dayjs/locale/pt-BR';
 
 function makeQueryClient() {
   return new QueryClient({
@@ -59,13 +64,18 @@ export function Provider({children} : {children: React.ReactNode}) {
     }
   });
 
+  const locale = useLocale();
+
   return (
       <QueryClientProvider client={client}>
         <ReactQueryStreamedHydration>
           <MantineProvider theme={theme} defaultColorScheme="dark">
+            <DatesProvider settings={{ locale: locale }}>
+              <Notifications limit={5} />
               <Shell>
                 {children}
               </Shell>
+            </DatesProvider>
           </MantineProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </ReactQueryStreamedHydration>
