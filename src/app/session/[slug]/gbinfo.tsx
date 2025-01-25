@@ -1,88 +1,125 @@
-import { Badge, Flex, Loader, Menu, SemiCircleProgress, Space, Title } from "@mantine/core";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Loader } from "@/src/components/loader/loader";
+import { ReactQueryKeys } from "@/src/shared/enums";
+import { useHttpClient } from "@/src/shared/useHttpClient";
+import { ActionIcon, Box, Button, Group, LoadingOverlay, Modal, NumberInput, Stack, Title, Tooltip } from "@mantine/core";
+import { useForm, yupResolver } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { useMutation, UseMutationResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { TbPencil } from "react-icons/tb";
+import * as yup from 'yup';
 
-type GbSessionInfo = {
-  id: number,
-  coreId: number,
-  headquarters: boolean,
-  teamSavings: number,
-  containmentGridCapacity: number,
-  containmentGridLoad: number
-}
+export function GbSessionInfo({slug, dmed, inPlay} : {slug: string, dmed: boolean, inPlay: boolean}) {
+  
+  const client = useHttpClient();
+  const t = useTranslations('sessions.detail.gb');
+  const [teamSavingsModalOpened, teamSavingsqModalHandlers] = useDisclosure();
+  const queryClient = useQueryClient();
 
-const getGbInfo = async (id: number) => {
-  return await fetch(`/gb/api/session/${id}`).then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.json();
-  }).then(json => {
-    return json;
-  }) as GbSessionInfo;
-}
-
-export function GbSessionInfo({slug, id, dmed, inPlay} : {slug: string, id: number, dmed: boolean, inPlay: boolean}) {
   const {data, isFetching } = useQuery({
-    queryKey: ['session-info-gb', slug],
-    queryFn: () => getGbInfo(id),
+    queryKey: [ReactQueryKeys.Ghostbusters.sessionInfo, slug],
+    queryFn: async () => {
+      return await client.get(`/gb/api/session/${slug}`) as GbSessionInfo;
+    },
   });
 
-  const t = useTranslations('sessions.detail.gb');
+  const updateMutation = useMutation({
+    mutationFn: async ({newValues}: {newValues: GbSessionInfo }) => {
+      return await client.put(`/gb/api/session/${slug}`, newValues)
+    },
+    onSuccess: (data: GbSessionInfo) => {
+      queryClient.setQueryData([ReactQueryKeys.Ghostbusters.sessionInfo, slug], data);
+      notifications.show({
+        color: 'green',
+        message: t('team_savings.notifications.success'),
+        position: 'top-right'
+      })
+    },
+    onError() {
+      notifications.show({
+        color: 'red',
+        message: t('team_savings.notifications.error'),
+        position: 'top-right'
+      })
+    },
+  })
 
-  const getLoadColor = (): string => {
-    if (data == null) {
-      return "primary"
-    }
-    let usage = (data.containmentGridLoad*100)/data.containmentGridCapacity;
-    return usage < 75 ? "green" : (usage < 90 ? "yellow" : "red");
-  }
+  // const getLoadColor = (): string => {
+  //   if (data == null) {
+  //     return "primary"
+  //   }
+  //   let usage = (data.containmentGridLoad*100)/data.containmentGridCapacity;
+  //   return usage < 75 ? "green" : (usage < 90 ? "yellow" : "red");
+  // }
 
   return <>
-      {isFetching && !data && <Flex mt="md" justify={"center"}>
-          <Loader type="bars"/>  
-      </Flex>}
-      {data && <>
-        <Flex justify={"start"}>
-          <Badge color={data.headquarters ? "green" : "red"}>{t(data.headquarters ? 'has_headquarters' : 'no_headquarters')}</Badge>
-        </Flex>
-        <Space h={"md"}/>
-        <Flex direction={{ base: "column", md:"row"  }} justify={"space-between"} align={{ base: "stretch", md: "center"}}>
-          <Title order={4}>{t('team_savings')}: ${data.teamSavings.toFixed(2)}</Title>
-          {data.headquarters && <Flex align={"center"} justify={"space-between"}>
-            <Title order={4}>{t('containment_grid_load')}</Title>
-            <SemiCircleProgress
-              fillDirection="left-to-right"
-              orientation="up"
-              filledSegmentColor={getLoadColor()}
-              size={200}
-              thickness={12}
-              value={data.containmentGridCapacity > 0 ? (data.containmentGridLoad*100)/data.containmentGridCapacity : 0}
-              label={`${(data.containmentGridCapacity > 0 ? (data.containmentGridLoad*100)/data.containmentGridCapacity : 0).toFixed(2)} %`}
-            />
-          </Flex>}
-        </Flex>
-      </>}
+    <Loader visible={isFetching && !data} />
+    {data && <Box pos="relative">
+      <LoadingOverlay visible={updateMutation.isPending || isFetching} />
+      <Stack>
+        <Group>
+          <Title order={4}>{t('team_savings.label')}: ${data.teamSavings.toFixed(2)}</Title>
+          {dmed && inPlay && <>
+            <Tooltip label={t('team_savings.update')}>
+              <ActionIcon onClick={teamSavingsqModalHandlers.open}>
+                <TbPencil />
+              </ActionIcon>
+            </Tooltip>
+            <TeamSavingsModal opened={teamSavingsModalOpened} close={teamSavingsqModalHandlers.close} updateMutation={updateMutation} initialData={data}/>
+          </>}
+        </Group>
+        {/* {data.headquarters && <Stack align="center">
+          <Title order={4}>{t('containment_grid.label')}</Title>
+          <SemiCircleProgress
+            fillDirection="left-to-right"
+            orientation="up"
+            filledSegmentColor={getLoadColor()}
+            size={200}
+            thickness={12}
+            value={data.containmentGridCapacity > 0 ? (data.containmentGridLoad*100)/data.containmentGridCapacity : 0}
+            label={`${(data.containmentGridCapacity > 0 ? (data.containmentGridLoad*100)/data.containmentGridCapacity : 0).toFixed(2)} %`}
+            my={"sm"}
+          />
+          {dmed && inPlay && <>
+            <Button onClick={containmentGridModalHandlers.open}>{t('containment_grid.update')}</Button>
+            <ContainmentGridModal id={data.coreId} opened={containmentGridModalOpened} close={containmentGridModalHandlers.close} updateMutation={updateMutation} initialData={data}/>
+          </>}
+        </Stack>} */}
+      </Stack>
+    </Box>}
   </>;
 }
 
-export function GbSessionSubmenu({ slug }: { slug: string }) {
-  
-  const t = useTranslations("sessions.detail.gb")
-  const queryClient = useQueryClient();
+function TeamSavingsModal({ opened, close, updateMutation, initialData }: { opened: boolean; close: () => void; updateMutation: UseMutationResult<GbSessionInfo, Error, { newValues: GbSessionInfo; }, unknown>; initialData: GbSessionInfo }) {
+  const t = useTranslations('sessions.detail.gb.team_savings');
 
-  const data = queryClient.getQueryData(['session-info-gb', slug]) as GbSessionInfo;
+  const schema = yup.object().shape({
+    teamSavings: yup.number().typeError(t('new_value.must_be_number')).min(0, t('new_value.min_value')).required(t('new_value.required'))
+  });
 
-  return <>
-    {!data.headquarters && <Menu.Item onClick={() => {
-                
-    }}>
-      {t("enable_hq")}
-    </Menu.Item>}
-    {data.headquarters && <Menu.Item onClick={() => {
-                
-    }}>
-      {t("disable_hq")}
-    </Menu.Item>}
-  </>
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: initialData,
+    validate: yupResolver(schema)
+  })
+
+  return <Modal opened={opened} onClose={() => {
+    form.reset();
+    close();
+  }} centered title={t('label')} size={"lg"}>
+    <form onSubmit={
+      form.onSubmit((values) => {
+        close();
+        updateMutation.mutate({newValues: values});
+      })
+    }>
+      <Stack>
+        <NumberInput label={t('new_value.label')} prefix="$ " decimalScale={2} fixedDecimalScale key={form.key('teamSavings')} {...form.getInputProps('teamSavings')} />
+        <Group justify="flex-end" mt="md">
+          <Button type={"submit"}>{t('new_value.submit')}</Button>
+        </Group>
+      </Stack>
+    </form>
+  </Modal>
 }

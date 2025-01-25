@@ -1,9 +1,9 @@
 'use client';
 
 import { Box, Divider, LoadingOverlay } from "@mantine/core";
+import { useState } from "react";
 import { Calendar } from "./calendar";
 import { NextSession } from "./nextsession";
-import { useState } from "react";
 
 export function Home() {
 
@@ -11,8 +11,8 @@ export function Home() {
 
   return <Box pos="relative">
     <LoadingOverlay visible={loading} />
-    <NextSession setLoadingHome={setLoading}/>
+    <NextSession setLoadingHomeAction={setLoading} />
     <Divider my="md"/>
-    <Calendar />
+    <Calendar setLoadingHomeAction={setLoading} />
   </Box>;
 }

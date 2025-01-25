@@ -3,5 +3,10 @@
     "i18n-ally.localesPaths": [
         "src/i18n/translations"
     ],
-    "i18n-ally.sourceLanguage": "pt-BR"
+    "i18n-ally.sourceLanguage": "pt-BR",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    },
+    "editor.tabSize": 2,
 }

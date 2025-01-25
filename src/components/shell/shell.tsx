@@ -2,18 +2,15 @@
 
 import { SwitchTheme } from "@/src/components/themeswitch/switchtheme";
 import { useMenu } from "@/src/shared/useMenu";
-import { AppShell, Avatar, Box, Burger, Divider, Flex, Loader, LoadingOverlay, Menu, NavLink } from "@mantine/core";
+import { AppShell, Avatar, Box, Burger, Divider, Group, LoadingOverlay, Menu, NavLink } from "@mantine/core";
 import { useDisclosure, useInViewport } from "@mantine/hooks";
-import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { GiFloatingGhost, GiScrollUnfurled, GiTabletopPlayers } from "react-icons/gi";
 import { TbHome } from "react-icons/tb";
+import { Loader } from "../loader/loader";
 
 export function Shell({children}: {children: React.ReactNode}) {
-
-  // const queryClient = useQueryClient();
-
   const menu = useMenu();
 
   const t = useTranslations("menu");
@@ -21,8 +18,6 @@ export function Shell({children}: {children: React.ReactNode}) {
   const [opened, { toggle }] = useDisclosure();
   const { ref, inViewport } = useInViewport();
   const pathname = usePathname();
-
-  
 
   const showMenu = (menuLabel: string): boolean => {
     if (menu.data == null) {
@@ -49,7 +44,7 @@ export function Shell({children}: {children: React.ReactNode}) {
     }}
   >
     <AppShell.Header withBorder={false}>
-      <Flex justify={inViewport ? 'space-between' : 'flex-end'} align='center' direction='row' h='100%' px='md'>
+      <Group justify={inViewport ? 'space-between' : 'flex-end'} align='center' h='100%' px='md'>
         <Burger
           ref={ref}
           opened={opened}
@@ -71,15 +66,13 @@ export function Shell({children}: {children: React.ReactNode}) {
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-      </Flex>
+      </Group>
     </AppShell.Header>
 
     <AppShell.Navbar py="md" withBorder>
       <Box pos={"relative"}>
         <LoadingOverlay visible={menu.loading && menu.data != null}/>
-        {menu.loading && !menu.data && <Flex mt="md" justify={"center"}>
-            <Loader type="bars"/>  
-        </Flex>}
+        <Loader visible={menu.loading && !menu.data} />
         {showMenu('link_home') && <NavLink
           href="/"
           label={t('link_home')}
@@ -138,6 +131,11 @@ export function Shell({children}: {children: React.ReactNode}) {
               href="/gb/talents"
               label={t('ghostbusters.talents')}
               active={pathname.includes('/gb/talents')}  
+            />
+            <NavLink 
+              href="/gb/headquarters"
+              label={t('ghostbusters.headquarters')}
+              active={pathname.includes('/gb/headquarters')}  
             />
           </NavLink>
         </>}

@@ -14,7 +14,8 @@
             "ecto_one_upgrades": "Ecto one upgrades",
             "equipment": "Equipment",
             "equipment_upgrades": "Equipment upgrades",
-            "talents": "Talents"
+            "talents": "Talents",
+            "headquarters": "Headquarters"
         }
     },
     "deleteModal": {
@@ -32,7 +33,24 @@
         "calendar": {
             "title": "Calendar",
             "button_prev": "Previous",
-            "button_next": "Next"
+            "button_next": "Next",
+            "schedule_details": {
+                "label": "Schedule details",
+                "date": "Date",
+                "view_session": "View session",
+                "delete": {
+                    "label": "Delete schedule",
+                    "confirm_msg": "Are you sure you want to remove the schedule?",
+                    "cancel": "Cancel",
+                    "confirm": "Confirm"
+                }
+            },
+            "notifications": {
+                "delete_schedule": {
+                    "success": "Schedule removed!",
+                    "error": "Unable to remove schedule!"
+                }
+            }
         }
     },
     "sessions": {
@@ -41,6 +59,7 @@
             "no_data": "No sessions found"
         },
         "detail": {
+            "session": "Session",
             "sheets": "Character sheets",
             "my_sheet": "My character sheet",
             "set_in_play": "In play",
@@ -58,10 +77,21 @@
             "gb": {
                 "has_headquarters": "Has headquarters",
                 "no_headquarters": "No headquarters",
-                "enable_hq": "Enable HQ",
-                "disable_hq": "Disable HQ",
-                "team_savings": "Team savings",
-                "containment_grid_load": "Containment grid load"
+                "team_savings": {
+                    "label": "Team savings",
+                    "update": "Update team savings",
+                    "new_value": {
+                        "label": "New value",
+                        "must_be_number": "New value must be a number!",
+                        "min_value": "New value must be 0 or greater!",
+                        "required": "New value can't be empty!",
+                        "submit": "Update"
+                    },
+                    "notifications": {
+                        "success": "Team savings updated!",
+                        "error": "Unable to update team savings"
+                    }
+                }
             }
         }
     },
@@ -90,16 +120,37 @@
         }
     },
     "ghostbusters": {
+        "add_upgrade": {
+            "label": "Add upgrade",
+            "save": "Save",
+            "placeholder": "Pick a value",
+            "loading": "Loading...",
+            "success": "Upgrade added to resource!",
+            "error": "Unable to add upgrade to resource!"
+        },
+        "delete_upgrade": {
+            "title": "Unlink upgrade",
+            "unlink_confirm": "Do you really want to unlink the upgrade {upgrade} fromn the resource {resource}?",
+            "this_action_cant_be_undone": "This action can't be undone!",
+            "cancel": "Cancel",
+            "confirm": "Confirm",
+            "delete": {
+                "success": "Upgrade sucessfully unlinked!",
+                "error": "Unable to unlink upgrade!"
+            }
+        },
         "ecto_one": {
             "title": "Ecto one",
             "no_data": "No data!",
             "new": "Add",
             "details": {
                 "name": "Name",
+                "description": "Description",
                 "carryWeight": "Carry weight",
                 "seats": "Seats",
                 "cost": "Cost",
                 "units": "{count, plural, =1 {unit} =0 {No capacity} other {units}}",
+                "available_upgrades": "Available upgrades",
                 "delete": {
                     "button": "Delete",
                     "success": "Ecto one deleted sucessfully!",
@@ -112,6 +163,10 @@
                 "name": {
                     "label": "Name",
                     "required": "Name can't be empty!"
+                },
+                "description": {
+                    "label": "Description",
+                    "required": "Description can't be empty!"
                 },
                 "carryWeight": {
                     "label": "Carry weight",
@@ -141,37 +196,212 @@
         "ecto_one_upgrades": {
             "title": "Ecto one upgrades",
             "no_data": "No data!",
+            "new": "Add",
             "details": {
                 "name": "Name",
                 "cost": "Cost",
-                "description": "Description"
+                "description": "Description",
+                "delete": {
+                    "button": "Delete",
+                    "success": "Ecto one upgrade deleted sucessfully!",
+                    "error": "unable to delete ecto one upgrade!"
+                }
+            },
+            "form": {
+                "title": "New ecto one upgrade",
+                "submit": "Save",
+                "name": {
+                    "label": "Name",
+                    "required": "Name can't be empty!"
+                },
+                "description": {
+                    "label": "Description",
+                    "required": "Description can't be empty!"
+                },
+                "cost": {
+                    "label": "Cost",
+                    "required": "Cost can't be empty!",
+                    "must_be_number": "Cost must be a number!",
+                    "min_value": "Cost must be greater than 0!"
+                },
+                "notifications": {
+                    "success": "Ecto one upgrade sucessfully saved!",
+                    "error": "Error saving ecto one upgrade!"
+                }
             }
         },
         "equipment": {
             "title": "Equipment",
             "no_data": "No data!",
+            "new": "Add",
             "details": {
                 "name": "Name",
                 "weight": "Weight",
                 "cost": "Cost",
-                "units": "units"
+                "description": "Description",
+                "units": "{count, plural, =1 {unit} other {units}}",
+                "available_upgrades": "Available upgrades",
+                "delete": {
+                    "button": "Delete",
+                    "success": "Equipment deleted sucessfully!",
+                    "error": "unable to delete equipment!"
+                }
+            },
+            "form": {
+                "title": "New equipment",
+                "submit": "Save",
+                "name": {
+                    "label": "Name",
+                    "required": "Name can't be empty!"
+                },
+                "weight": {
+                    "label": "Weight",
+                    "units": "{count, plural, =1 {unit} other {units}}",
+                    "required": "Weight can't be empty!",
+                    "must_be_number": "Weight must be a number!",
+                    "min_value": "Weight must be greater than 0!"
+                },
+                "cost": {
+                    "label": "Cost",
+                    "required": "Cost can't be empty!",
+                    "must_be_number": "Cost must be a number!",
+                    "min_value": "Cost must be greater than 0!"
+                },
+                "description": {
+                    "label": "Description",
+                    "required": "Description can't be empty!"
+                },
+                "notifications": {
+                    "success": "Equipment sucessfully saved!",
+                    "error": "Error saving equipment!"
+                }
             }
         },
         "equipment_upgrades": {
             "title": "Equipment upgrades",
             "no_data": "No data!",
+            "new": "Add",
             "details": {
                 "name": "Name",
                 "cost": "Cost",
-                "description": "Description"
+                "description": "Description",
+                "delete": {
+                    "button": "Delete",
+                    "success": "Equipment upgrade deleted sucessfully!",
+                    "error": "unable to delete equipment upgrade!"
+                }
+            },
+            "form": {
+                "title": "New equipment upgrade",
+                "submit": "Save",
+                "name": {
+                    "label": "Name",
+                    "required": "Name can't be empty!"
+                },
+                "description": {
+                    "label": "Description",
+                    "required": "Description can't be empty!"
+                },
+                "cost": {
+                    "label": "Cost",
+                    "required": "Cost can't be empty!",
+                    "must_be_number": "Cost must be a number!",
+                    "min_value": "Cost must be greater than 0!"
+                },
+                "notifications": {
+                    "success": "Equipment upgrade sucessfully saved!",
+                    "error": "Error saving equipment upgrade!"
+                }
             }
         },
         "talents": {
             "title": "Talents",
-            "no_data": "Sem dados!",
+            "no_data": "No data!",
+            "new": "Ads",
             "details": {
                 "name": "Name",
-                "trait": "Trait"
+                "trait": "Trait",
+                "delete": {
+                    "button": "Delete",
+                    "success": "Talent deleted sucessfully!",
+                    "error": "unable to delete talent!"
+                }
+            },
+            "form": {
+                "title": "New talent",
+                "submit": "Save",
+                "name": {
+                    "label": "Name",
+                    "required": "Name can't be empty!"
+                },
+                "trait": {
+                    "label": "Trait",
+                    "required": "Trait can't be empty!"
+                },
+                "notifications": {
+                    "success": "Talent sucessfully saved!",
+                    "error": "Error saving talent"
+                }
+            }
+        },
+        "headquarters": {
+            "title": "Headquarters",
+            "no_data": "No data!",
+            "new": "Add",
+            "details": {
+                "name": "Name",
+                "description": "Description",
+                "inventorySize": "Inventory size",
+                "containmentGridCapacity": "Containment grid capacity",
+                "cost": "Cost",
+                "units": "{count, plural, =1 {unit} =0 {No capacity} other {units}}",
+                "garageSize": "Garage size",
+                "delete": {
+                    "button": "Delete",
+                    "success": "Headquarters deleted sucessfully!",
+                    "error": "Unable to delete headquarters!"
+                }
+            },
+            "form": {
+                "title": "New headquarters",
+                "submit": "Save",
+                "name": {
+                    "label": "Name",
+                    "required": "Name can't be empty!"
+                },
+                "description": {
+                    "label": "Description",
+                    "required": "Description can't be empty!"
+                },
+                "inventorySize": {
+                    "label": "Inventory size",
+                    "units": "{count, plural, =1 {unit} other {units}}",
+                    "required": "Inventory size can't be empty!",
+                    "must_be_number": "Inventory size must be a number!",
+                    "min_value": "Inventory size must be greater 0!"
+                },
+                "containmentGridCapacity": {
+                    "label": "Containment grid capacity",
+                    "required": "Containment grid capacity can't be empty!",
+                    "must_be_number": "Containment grid capacity must be a number!",
+                    "min_value": "Containment grid capacity must be 0 or greater!"
+                },
+                "cost": {
+                    "label": "Cost",
+                    "required": "Cost can't be empty!",
+                    "must_be_number": "Cost must be a number!",
+                    "min_value": "Cost must be greater than 0!"
+                },
+                "garageSize": {
+                    "label": "Garage size",
+                    "required": "Garage size can't be empty!",
+                    "must_be_number": "Garage size must be a number!",
+                    "min_value": "Garage size must be greater than 0!"
+                },
+                "notifications": {
+                    "success": "Headquarters sucessfully saved!",
+                    "error": "Error saving headquarters!"
+                }
             }
         }
     }

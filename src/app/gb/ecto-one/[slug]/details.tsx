@@ -1,124 +1,124 @@
 'use client';
 
-import { Box, Button, Flex, Grid, Loader, LoadingOverlay, Paper, Space, Text, Title } from "@mantine/core";
+import { DeleteModal } from "@/src/components/deletemodal/deletemodal";
+import { Loader } from "@/src/components/loader/loader";
+import { PaperCard } from "@/src/components/papercard/papercard";
+import { ReactQueryKeys } from "@/src/shared/enums";
+import { useHttpClient } from "@/src/shared/useHttpClient";
+import { useMenu } from "@/src/shared/useMenu";
+import { Box, Button, Divider, Group, List, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useDisclosure } from "@mantine/hooks";
-import { TbTrash } from "react-icons/tb";
-import { useMenu } from "@/src/shared/useMenu";
-import { DeleteModal } from "@/src/components/deletemodal/deletemodal";
 import { useRouter } from "next/navigation";
-import { notifications } from "@mantine/notifications";
-
-export const getEctoOne = async (slug: string) => {
-  return await fetch(`/gb/api/ecto-one/${slug}`).then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.json();
-  }).then(json => {
-    return json;
-  }) as EctoOne;
-}
-
-export const deleteEctoOne = async (slug: string) => {
-  return await fetch(`/gb/api/ecto-one/${slug}`, {
-    method: "DELETE"
-  }).then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.ok;
-  })
-}
+import { TbTrash } from "react-icons/tb";
+import { AddUpgradeModal } from "../../addupgrademodal";
+import { DeleteUpgradeButton } from "../../deleteupgradebutton";
+import { EctoOneForm } from "../form";
 
 export function EctoOneDetails({ slug } : { slug: string }) {
   const t = useTranslations('ghostbusters.ecto_one.details');
-  
   const menu = useMenu();
-
   const router = useRouter();
   const queryClient = useQueryClient();
+  const client = useHttpClient();
 
   const {data, isFetching } = useQuery({
-    queryKey: ['gb-ecto-one-details', slug],
-    queryFn: () => getEctoOne(slug)
+    queryKey: [ReactQueryKeys.Ghostbusters.ectoOneDetail, slug],
+    queryFn: async () => {
+      return await client.get(`/gb/api/ecto-one/${slug}`) as EctoOne;
+    }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteEctoOne,
-    onSuccess: (ok) => {
+    mutationFn: async (slug: string) => {
       deleteModalHandlers.close();
-      if (ok) {
-        notifications.show({
-          color: 'green',
-          message: t('delete.success'),
-          position: 'top-right'
-        })
-        router.back();
-        queryClient.invalidateQueries({queryKey: ['gb-ecto-one-list']})
-      } else {
-        notifications.show({
-          color: 'red',
-          message: t('delete.error'),
-          position: 'top-right'
-        })
-      }
+      return await client.delete(`/gb/api/ecto-one/${slug}`)
+    },
+    onSuccess: () => {
+      notifications.show({
+        color: 'green',
+        message: t('delete.success'),
+        position: 'top-right'
+      })
+      queryClient.invalidateQueries({queryKey: [ReactQueryKeys.Ghostbusters.ectoOneList]})
+      queryClient.removeQueries({queryKey: [ReactQueryKeys.Ghostbusters.ectoOneDetail]})
+      router.back();
+    },
+    onError: () => {
+      notifications.show({
+        color: 'red',
+        message: t('delete.error'),
+        position: 'top-right'
+      })
     }
   })
   
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure();
 
   return <>
-    {menu.loading || (isFetching && !data) && <Flex mt="md" justify={"center"}>
-      <Loader type="bars"/>  
-    </Flex>}
+    <Loader visible={isFetching && !data} />
     {data && <Box pos={"relative"}>
-      <LoadingOverlay visible={deleteMutation.isPending} />
-      {menu && menu.checkPermission('ghostbusters', 'delete') && <Flex justify={"end"}>
+      <LoadingOverlay visible={isFetching || deleteMutation.isPending} />
+      {menu && menu.checkPermission('ghostbusters', 'delete') && data.canChange && <Group justify={"end"}>
           <Button leftSection={<TbTrash />} onClick={deleteModalHandlers.open}>
             {t('delete.button')}
           </Button>
         <DeleteModal opened={deleteModalOpened} resourceName={data.name} close={deleteModalHandlers.close} onConfirm={() => {
           deleteMutation.mutate(slug)
         }}/>
-      </Flex>}
-      <Paper shadow="md" p="md" my="md" styles={{
-        root: {
-            backgroundColor: 'var(--mantine-color-default-hover)',
-        }
-      }}>
-        <Grid>
-          <Grid.Col>
-            <Flex align={"center"}>
-              <Title order={4}>{t('name')}:</Title>
-              <Space w={"xs"} />
-              {data.name}
-            </Flex>
-          </Grid.Col>
-          <Grid.Col>
-            <Flex align={"center"}>
-              <Title order={4}>{t('carryWeight')}:</Title>
-              <Space w={"xs"} />
-              <Text>{data.carryWeight} {t('units', {count: data.carryWeight})}</Text>
-            </Flex>
-          </Grid.Col>
-          <Grid.Col>
-            <Flex align={'center'}>
-              <Title order={4}>{t('seats')}:</Title>
-              <Space w={"xs"} />
-              {data.seats}
-            </Flex>
-          </Grid.Col>
-          <Grid.Col>
-            <Flex align={'center'}>
-              <Title order={4}>{t('cost')}:</Title>
-              <Space w={"xs"} />
-              ${data.cost.toFixed(2)}
-            </Flex>
-          </Grid.Col>
-        </Grid>
-      </Paper>
+      </Group>}
+      <PaperCard>
+        {menu && (!menu.checkPermission('ghostbusters', 'update') || !data.canChange) && <Group>
+          <Stack>
+            <Text fw={"bold"}>{t('name')}:</Text>
+            <Text fw={"bold"}>{t('description')}:</Text>
+            <Text fw={"bold"}>{t('cost')}:</Text>
+            <Text fw={"bold"}>{t('seats')}:</Text>
+            <Text fw={"bold"}>{t('carryWeight')}:</Text>
+          </Stack>
+          <Stack>
+            <Text>{data.name}</Text>
+            <Text>{data.description}</Text>
+            <Text>${data.cost.toFixed(2)}</Text>
+            <Text>{data.seats}</Text>
+            <Text>{data.carryWeight} {t('units', {count: data.carryWeight})}</Text>
+          </Stack>
+        </Group>}
+        {menu && menu.checkPermission('ghostbusters', 'update') && data.canChange && <EctoOneForm 
+          onSubmit={(newData?: EctoOne) => {
+            if (newData != null) {
+              if (newData.slug != data.slug) {
+                router.replace(`/gb/ecto-one/${newData.slug}`)
+              } else {
+                queryClient.setQueryData([ReactQueryKeys.Ghostbusters.ectoOneDetail, slug], newData)
+              }
+            }
+          }} 
+          initialData={data} 
+        />}
+        <Divider my={"md"} />
+        <Title order={4}>{t('available_upgrades')}</Title>
+        <List withPadding mt={"md"}>
+          {data.availableUpgrades && data.availableUpgrades.map((upgrade) => {
+            return <List.Item key={upgrade.id}>
+              {upgrade.description}
+              {menu && menu.checkPermission('ghostbusters', 'update') && data.canChange && <DeleteUpgradeButton 
+                resourceName={data.name} 
+                upgradeName={upgrade.description} 
+                queryKeys={[ReactQueryKeys.Ghostbusters.ectoOneDetail, slug]}
+                deleteLink={`/gb/api/ecto-one/${slug}/unlink-upgrade/${upgrade.id}`}
+              />}
+            </List.Item>
+          })}
+        </List>
+        {menu && menu.checkPermission('ghostbusters', 'update') && data.canChange && <AddUpgradeModal
+          queryKey={[ReactQueryKeys.Ghostbusters.ectoOneDetail, slug]} 
+          addUpgradeLink={`/gb/api/ecto-one/${slug}/link-upgrade`}
+          getAsyncDataAction={() => { return client.get('/gb/api/ecto-one/upgrades') }} 
+        />}
+      </PaperCard>
     </Box>}
   </>
 }

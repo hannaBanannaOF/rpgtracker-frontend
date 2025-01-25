@@ -1,39 +1,45 @@
 'use client';
 
 import { ListTile } from "@/src/components/listtile/listtile";
-import { Alert, Box, Flex, Loader, LoadingOverlay, Text, Title } from "@mantine/core";
+import { Loader } from "@/src/components/loader/loader";
+import { ReactQueryKeys } from "@/src/shared/enums";
+import { useHttpClient } from "@/src/shared/useHttpClient";
+import { useMenu } from "@/src/shared/useMenu";
+import { Alert, Box, Button, Group, LoadingOverlay, Modal, Text, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-import { ListItem } from "../types";
 import { useRouter } from "next/navigation";
-
-export const getItems = async () => {
-  return await fetch('/gb/api/talent').then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.json();
-  }).then(json => {
-    return json;
-  }) as ListItem[];
-}
+import { useState } from "react";
+import { TbPlus } from "react-icons/tb";
+import { TalentForm } from "./form";
 
 export function TalentsList() {
   const t = useTranslations('ghostbusters.talents');
-  const router = useRouter()
-  const {data, isFetching } = useQuery({
-    queryKey: ['gb-talents-list'],
-    queryFn: () => getItems(),
-  });
-
+  const router = useRouter();
+  const client = useHttpClient();
   const [loading, setLoading] = useState(false);
+  const menu = useMenu();
+  const [opened, { open, close }] = useDisclosure();
+
+  const {data, isFetching } = useQuery({
+    queryKey: [ReactQueryKeys.Ghostbusters.talentList],
+    queryFn: async () => {
+      return await client.get('http://localhost:8081/gb/api/talent') as ListItem[];
+    },
+  });
 
   return <>
     <Title order={2}>{t('title')}</Title>
-    {isFetching && !data && <Flex mt="md" justify={"center"}>
-      <Loader type="bars"/>  
-    </Flex>}
+    <Loader visible={isFetching && !data} />
+    {menu && menu.checkPermission('ghostbusters', 'create') && <Group justify={"end"}>
+      <Button leftSection={<TbPlus />} onClick={open}>
+        {t('new')}
+      </Button>
+      <Modal opened={opened} onClose={close} centered title={t("form.title")} size={"lg"}>
+        <TalentForm onSubmit={close}/>
+      </Modal>
+    </Group>}
     {data && data.length > 0 &&
       <Box pos={"relative"}>
         <LoadingOverlay visible={loading} />

@@ -1,48 +1,32 @@
 'use client';
 
-import { TRpgKind } from "@/src/shared/enums";
+import { ReactQueryKeys, TRpgKind } from "@/src/shared/enums";
 import { ListTile } from "@/src/components/listtile/listtile";
-import { Alert, Box, Flex, Loader, LoadingOverlay, Skeleton, Text, Title } from "@mantine/core";
+import { Alert, Box, LoadingOverlay, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-
-type Sheet = {
-  slug: string;
-  description: string;
-  system: TRpgKind;
-};
-
-const getSheets = async () => {
-  return await fetch('/core/api/me/sheets').then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.json();
-  }).then(json => {
-    return json;
-  }) as Sheet[];
-}
+import { useHttpClient } from "@/src/shared/useHttpClient";
+import { Loader } from "@/src/components/loader/loader";
 
 export function MySheets() {
 
-  const {data, isFetching } = useQuery({
-    queryKey: ['my-sheets'],
-    queryFn: () => getSheets(),
-  });
-
+  const client = useHttpClient();
   const router = useRouter();
-
   const t = useTranslations('sheets.list');
-
   const [loading, setLoading] = useState(false);
+
+  const {data, isFetching } = useQuery({
+    queryKey: [ReactQueryKeys.Core.mySheets],
+    queryFn: async () => {
+      return await client.get('/core/api/me/sheets') as Sheet[];
+    },
+  });
 
   return <>
     <Title order={2}>{t('title')}</Title>
-    {isFetching && !data && <Flex mt="md" justify={"center"}>
-      <Loader type="bars"/>  
-    </Flex>}
+    <Loader visible={isFetching && !data} />
     {data && data.length > 0 &&
       <Box pos={"relative"}>
         <LoadingOverlay visible={loading} />

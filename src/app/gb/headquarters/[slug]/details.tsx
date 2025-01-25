@@ -13,29 +13,26 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { TbTrash } from "react-icons/tb";
-import { TalentTrait } from "../enum";
-import { TalentForm } from "../form";
-import { Talent } from "../types";
+import { HeadquartersForm } from "../form";
 
-export function TalentDetails({ slug } : { slug: string }) {
-  const t = useTranslations('ghostbusters.talents.details');
-  const queryClient = useQueryClient();
-  const router = useRouter();
+export function HeadquartersDetails({ slug } : { slug: string }) {
+  const t = useTranslations('ghostbusters.headquarters.details');
   const menu = useMenu();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const client = useHttpClient();
-  const [deleteModalOpened, deleteModalHandlers] = useDisclosure();
 
   const {data, isFetching } = useQuery({
-    queryKey: [ReactQueryKeys.Ghostbusters.talentDetail, slug],
+    queryKey: [ReactQueryKeys.Ghostbusters.headquartersDetail, slug],
     queryFn: async () => {
-      return await client.get(`http://localhost:8081/gb/api/talent/${slug}`) as Talent
-    },
+      return await client.get(`/gb/api/headquarters/${slug}`) as Headquarters;
+    }
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (slug: string) => {
       deleteModalHandlers.close();
-      return await client.delete(`http://localhost:8081/gb/api/talent/${slug}`)
+      return await client.delete(`/gb/api/headquarters/${slug}`)
     },
     onSuccess: () => {
       notifications.show({
@@ -43,8 +40,8 @@ export function TalentDetails({ slug } : { slug: string }) {
         message: t('delete.success'),
         position: 'top-right'
       })
-      queryClient.invalidateQueries({queryKey: [ReactQueryKeys.Ghostbusters.talentList]})
-      queryClient.removeQueries({queryKey: [ReactQueryKeys.Ghostbusters.talentDetail]})
+      queryClient.invalidateQueries({queryKey: [ReactQueryKeys.Ghostbusters.headquartersList]})
+      queryClient.removeQueries({queryKey: [ReactQueryKeys.Ghostbusters.headquartersDetail]})
       router.back();
     },
     onError: () => {
@@ -55,11 +52,13 @@ export function TalentDetails({ slug } : { slug: string }) {
       })
     }
   })
+  
+  const [deleteModalOpened, deleteModalHandlers] = useDisclosure();
 
   return <>
-    <Loader visible={isFetching && !data}/>
+    <Loader visible={isFetching && !data} />
     {data && <Box pos={"relative"}>
-      <LoadingOverlay visible={deleteMutation.isPending} />
+      <LoadingOverlay visible={isFetching || deleteMutation.isPending} />
       {menu && menu.checkPermission('ghostbusters', 'delete') && data.canChange && <Group justify={"end"}>
           <Button leftSection={<TbTrash />} onClick={deleteModalHandlers.open}>
             {t('delete.button')}
@@ -72,20 +71,28 @@ export function TalentDetails({ slug } : { slug: string }) {
         {menu && (!menu.checkPermission('ghostbusters', 'update') || !data.canChange) && <Group>
           <Stack>
             <Text fw={"bold"}>{t('name')}:</Text>
-            <Text fw={"bold"}>{t('trait')}:</Text>
+            <Text fw={"bold"}>{t('description')}:</Text>
+            <Text fw={"bold"}>{t('cost')}:</Text>
+            <Text fw={"bold"}>{t('containmentGridCapacity')}:</Text>
+            <Text fw={"bold"}>{t('inventorySize')}:</Text>
+            <Text fw={"bold"}>{t('garageSize')}:</Text>
           </Stack>
           <Stack>
             <Text>{data.name}</Text>
-            <Text>{TalentTrait.getLabel(data.trait)}</Text>
+            <Text>{data.description}</Text>
+            <Text>${data.cost.toFixed(2)}</Text>
+            <Text>{data.containmentGridCapacity}</Text>
+            <Text>{data.inventorySize} {t('units', {count: data.inventorySize})}</Text>
+            <Text>{data.garageSize}</Text>
           </Stack>
         </Group>}
-        {menu && menu.checkPermission('ghostbusters', 'update') && data.canChange && <TalentForm 
-          onSubmit={(newData?: Talent) => {
+        {menu && menu.checkPermission('ghostbusters', 'update') && data.canChange && <HeadquartersForm 
+          onSubmit={(newData?: Headquarters) => {
             if (newData != null) {
               if (newData.slug != data.slug) {
-                router.replace(`/gb/talents/${newData.slug}`)
+                router.replace(`/gb/headquarters/${newData.slug}`)
               } else {
-                queryClient.setQueryData([ReactQueryKeys.Ghostbusters.talentDetail, slug], newData)
+                queryClient.setQueryData([ReactQueryKeys.Ghostbusters.headquartersDetail, slug], newData)
               }
             }
           }} 

@@ -1,22 +1,22 @@
 import { ReactQueryKeys } from "@/src/shared/enums";
 import { useHttpClient } from "@/src/shared/useHttpClient";
-import { Box, Button, Flex, Group, LoadingOverlay, NumberInput, Stack, Textarea, TextInput } from "@mantine/core";
+import { Box, Button, Flex, Group, LoadingOverlay, NumberInput, Stack, Textarea, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import * as Yup from 'yup';
 
-export function EctoOneForm({ onSubmit, initialData }: { onSubmit: (newData?: EctoOne) => void, initialData?: EctoOne }) {
+export function EquipmentForm({ onSubmit, initialData }: { onSubmit: (newData?: Equipment) => void, initialData?: Equipment }) {
 
-  const client = useHttpClient();
-  const t = useTranslations("ghostbusters.ecto_one.form");
+  const t = useTranslations("ghostbusters.equipment.form");
   const queryClient = useQueryClient();
+  const client = useHttpClient();
 
-  const saveEctoOneMutation = useMutation({
-    mutationFn: async ({ data }: { data: EctoOne }) => {
-      let promise = initialData != null ? client.put(`/gb/api/ecto-one/${initialData.slug!}`, data) : client.post('/gb/api/ecto-one', data)
-      return await promise as EctoOne | undefined
+  const saveEquipmentMutation = useMutation({
+    mutationFn: async ({ data }: { data: Equipment }) => {
+      let promise = initialData != null ? client.put(`/gb/api/equipment/${initialData.slug!}`, data) : client.post('/gb/api/equipment', data)
+      return await promise as Equipment | undefined
     },
     onSuccess: (data) => {
       notifications.show({
@@ -24,7 +24,7 @@ export function EctoOneForm({ onSubmit, initialData }: { onSubmit: (newData?: Ec
         message: t('notifications.success'),
         position: 'top-right'
       })
-      queryClient.invalidateQueries({queryKey: [ReactQueryKeys.Ghostbusters.ectoOneList]})
+      queryClient.invalidateQueries({queryKey: [ReactQueryKeys.Ghostbusters.equipmentList]})
       onSubmit(data);
     },
     onError: () => {
@@ -38,37 +38,35 @@ export function EctoOneForm({ onSubmit, initialData }: { onSubmit: (newData?: Ec
 
   const schema = Yup.object().shape({
     name: Yup.string().required(t('name.required')),
-    description: Yup.string().required(t('description.required')),
     cost: Yup.number().typeError(t('cost.must_be_number')).required(t('cost.required')).min(0.01, t('cost.min_value')),
-    seats: Yup.number().typeError(t('seats.must_be_number')).required(t('seats.required')).min(1, t('seats.min_value')),
-    carryWeight: Yup.number().typeError(t('carryWeight.must_be_number')).required(t('carryWeight.required')).min(1, t('carryWeight.min_value'))
+    weight: Yup.number().typeError(t('weight.must_be_number')).required(t('weight.required')).min(1, t('weight.min_value')),
+    description: Yup.string().required(t('description.required'))
   });
 
   const form = useForm({
     mode: 'controlled',
     initialValues: initialData ?? {
       name: "",
-      description: "",
       cost: 0.00,
-      carryWeight: 0,
-      seats: 0
+      weight: 0,
+      seats: 0,
+      description: ""
     },
     validate: yupResolver(schema)
   })
 
   return <Box pos={"relative"}>
-    <LoadingOverlay visible={saveEctoOneMutation.isPending} />
+    <LoadingOverlay visible={saveEquipmentMutation.isPending} />
     <form onSubmit={
       form.onSubmit(values => {
-        return saveEctoOneMutation.mutate({data: values});
+        return saveEquipmentMutation.mutate({data: values});
       })
     }>
       <Stack>
         <TextInput label={t('name.label')} key={form.key('name')} {...form.getInputProps('name')} />
         <Flex gap={"md"} direction={{ base: "column", sm: "row" }}>
           <NumberInput style={{ flexGrow: 1 }} label={t('cost.label')} prefix="$ " decimalScale={2} fixedDecimalScale key={form.key('cost')} {...form.getInputProps('cost')} />
-          <NumberInput style={{ flexGrow: 1 }} label={t('seats.label')} key={form.key('seats')} {...form.getInputProps('seats')} />
-          <NumberInput style={{ flexGrow: 1 }} label={t('carryWeight.label')} suffix={' '+t('carryWeight.units', {count: form.getValues().carryWeight})} key={form.key('carryWeight')} {...form.getInputProps('carryWeight')} />
+          <NumberInput style={{ flexGrow: 1 }} label={t('weight.label')} suffix={' '+t('weight.units', {count: form.getValues().weight})} key={form.key('weight')} {...form.getInputProps('weight')} />
         </Flex>
         <Textarea label={t('description.label')} key={form.key('description')} {...form.getInputProps('description')} />
         <Group justify="flex-end" mt="md">

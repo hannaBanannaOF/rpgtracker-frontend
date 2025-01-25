@@ -14,3 +14,8 @@ type UserInfo = {
   sideMenu: { menu: Menu[] };
   permissions: UserPermissions[];
 }
+
+type ListItem = {
+  id: string;
+  description: string;
+};

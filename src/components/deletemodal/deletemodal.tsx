@@ -1,6 +1,6 @@
 import { Alert, Button, Flex, Modal, Text, Title } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { TbCancel, TbCheck, TbX } from "react-icons/tb";
+import { TbCheck, TbX } from "react-icons/tb";
 
 export function DeleteModal({ opened, resourceName, close, onConfirm }: { opened: boolean, resourceName: string, close: () => void, onConfirm: () => void }) {
 

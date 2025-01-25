@@ -12,20 +12,20 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import { EctoOneForm } from "./form";
+import { HeadquartersForm } from "./form";
 
-export function EctoOneList() {
+export function HeadquartersList() {
   const client = useHttpClient();
-  const t = useTranslations('ghostbusters.ecto_one');
+  const t = useTranslations('ghostbusters.headquarters');
   const router = useRouter();
   const menu = useMenu();
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
 
   const {data, isFetching } = useQuery({
-    queryKey: [ReactQueryKeys.Ghostbusters.ectoOneList],
+    queryKey: [ReactQueryKeys.Ghostbusters.headquartersList],
     queryFn: async () => {
-      return await client.get('/gb/api/ecto-one') as ListItem[];
+      return await client.get('/gb/api/headquarters') as ListItem[];
     },
   });
 
@@ -37,7 +37,7 @@ export function EctoOneList() {
         {t('new')}
       </Button>
       <Modal opened={opened} onClose={close} centered title={t("form.title")} size={"lg"}>
-        <EctoOneForm onSubmit={close}/>
+        <HeadquartersForm onSubmit={close}/>
       </Modal>
     </Group>}
     {data && data.length > 0 &&
@@ -48,7 +48,7 @@ export function EctoOneList() {
             title={s.description}
             onClick={() => {
               setLoading(true);
-              router.push(`/gb/ecto-one/${s.id}`);
+              router.push(`/gb/headquarters/${s.id}`);
             }}
           />
         )}

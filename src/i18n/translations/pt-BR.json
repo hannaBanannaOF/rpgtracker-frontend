@@ -14,7 +14,8 @@
             "ecto_one_upgrades": "Upgrades do Ecto one",
             "equipment": "Equipamento",
             "equipment_upgrades": "Upgrades de equipamento",
-            "talents": "Talentos"
+            "talents": "Talentos",
+            "headquarters": "Quartel general"
         }
     },
     "deleteModal": {
@@ -32,7 +33,24 @@
         "calendar": {
             "title": "Calendário",
             "button_prev": "Anterior",
-            "button_next": "Próximo"
+            "button_next": "Próximo",
+            "schedule_details": {
+                "label": "Detalhes do agendamento",
+                "date": "Data",
+                "view_session": "Ver sessão",
+                "delete": {
+                    "label": "Remover agendamento",
+                    "confirm_msg": "Deseja realmente remover o agendamento?",
+                    "cancel": "Cancelar",
+                    "confirm": "Confirmar"
+                }
+            },
+            "notifications": {
+                "delete_schedule": {
+                    "success": "Agendamento removido!",
+                    "error": "Não foi possível remover o agendamento!"
+                }
+            }
         }
     },
     "sessions": {
@@ -41,6 +59,7 @@
             "no_data": "Nenhuma sessão encontrada"
         },
         "detail": {
+            "session": "Mesa",
             "sheets": "Fichas",
             "my_sheet": "Minha ficha",
             "set_in_play": "Jogando",
@@ -58,10 +77,21 @@
             "gb": {
                 "has_headquarters": "Tem quartel general",
                 "no_headquarters": "Sem quartel general",
-                "enable_hq": "Habilitar QG",
-                "disable_hq": "Desabilitar QG",
-                "team_savings": "Saldo do time",
-                "containment_grid_load": "Carga da grade de contenção"
+                "team_savings": {
+                    "label": "Saldo do time",
+                    "update": "Atualizar saldo do time",
+                    "new_value": {
+                        "label": "Novo valor",
+                        "must_be_number": "O novo valor deve ser um número!",
+                        "min_value": "O novo valor deve ser 0 ou maior!",
+                        "required": "O novo valor não pode ser vazio!",
+                        "submit": "Atualizar"
+                    },
+                    "notifications": {
+                        "success": "Saldo to time atualizado!",
+                        "error": "Não foi possível atualizar o saldo do time"
+                    }
+                }
             }
         }
     },
@@ -90,16 +120,37 @@
         }
     },
     "ghostbusters": {
+        "add_upgrade": {
+            "label": "Adicionar upgrade",
+            "save": "Salvar",
+            "placeholder": "Escolha um valor",
+            "loading": "Carregando...",
+            "success": "Upgrade adicionado ao recurso!",
+            "error": "Erro ao adicionar upgrade ao recurso!"
+        },
+        "delete_upgrade": {
+            "title": "Deslinkar upgrade",
+            "unlink_confirm": "Deseja realmente deslinkar o upgrade {upgrade} do recurso {resource}?",
+            "this_action_cant_be_undone": "Essa ação é permanente e não pode ser desfeita!",
+            "cancel": "Cancelar",
+            "confirm": "Confirmar",
+            "delete": {
+                "success": "Upgrade deslinkado com sucesso!",
+                "error": "Não foi possível deslinkar o upgrade!"
+            }
+        },
         "ecto_one": {
             "title": "Ecto one",
             "no_data": "Sem dados!",
             "new": "Adicionar",
             "details": {
                 "name": "Nome",
+                "description": "Descrição",
                 "carryWeight": "Capacidade de carga",
-                "seats": "Assentos",
+                "seats": "Nº Assentos",
                 "cost": "Custo",
                 "units": "{count, plural, =1 {unidade} =0 {Sem capacidade} other {unidades}}",
+                "available_upgrades": "Upgrades disponíveis",
                 "delete": {
                     "button": "Excluir",
                     "success": "Ecto one excluído com sucesso!",
@@ -113,18 +164,22 @@
                     "label": "Nome",
                     "required": "O nome não pode ser vazio!"
                 },
+                "description": {
+                    "label": "Descrição",
+                    "required": "A descrição não pode ser vazia!"
+                },
                 "carryWeight": {
                     "label": "Capacidade de carga",
                     "units": "{count, plural, =1 {unidade} other {unidades}}",
-                    "required": "Capacidade de carga não pode ser vazio!",
-                    "must_be_number": "Capacidade de carga deve ser um número!",
-                    "min_value": "Capacidade de carga deve ser maior que 0!"
+                    "required": "A capacidade de carga não pode ser vazio!",
+                    "must_be_number": "A capacidade de carga deve ser um número!",
+                    "min_value": "A capacidade de carga deve ser maior que 0!"
                 },
                 "seats": {
-                    "label": "Assentos",
-                    "required": "Assentos não pode ser vazio!",
-                    "must_be_number": "Assentos deve ser um número!",
-                    "min_value": "Assentos deve ser maior que 0!"
+                    "label": "Nº assentos",
+                    "required": "O número de assentos não pode ser vazio!",
+                    "must_be_number": "O número de assentos deve ser um número!",
+                    "min_value": "O número de assentos deve ser maior que 0!"
                 },
                 "cost": {
                     "label": "Custo",
@@ -136,43 +191,217 @@
                     "success": "Ecto one salvo com sucesso!",
                     "error": "Erro ao salvar ecto one"
                 }
-                
             }
         },
         "ecto_one_upgrades": {
             "title": "Upgrades do Ecto one",
             "no_data": "Sem dados!",
+            "new": "Adicionar",
             "details": {
                 "name": "Nome",
                 "cost": "Custo",
-                "description": "Descrição"
+                "description": "Descrição",
+                "delete": {
+                    "button": "Excluir",
+                    "success": "Upgrade do ecto one excluído com sucesso!",
+                    "error": "Falha ao excluir upgrade ecto one!"
+                }
+            },
+            "form": {
+                "title": "Novo upgrade do ecto one",
+                "submit": "Salvar",
+                "name": {
+                    "label": "Nome",
+                    "required": "O nome não pode ser vazio!"
+                },
+                "description": {
+                    "label": "Descrição",
+                    "required": "A descrição não pode ser vazia!"
+                },
+                "cost": {
+                    "label": "Custo",
+                    "required": "O custo não pode ser vazio!",
+                    "must_be_number": "O custo deve ser um número!",
+                    "min_value": "O custo deve ser maior que 0!"
+                },
+                "notifications": {
+                    "success": "Upgrade do ecto one salvo com sucesso!",
+                    "error": "Erro ao salvar upgrade do ecto one"
+                }
             }
         },
         "equipment": {
             "title": "Equipamentos",
             "no_data": "Sem dados!",
+            "new": "Adicionar",
             "details": {
                 "name": "Nome",
                 "weight": "Peso",
                 "cost": "Custo",
-                "units": "unidades"
+                "description": "Descrição",
+                "units": "{count, plural, =1 {unidade} other {unidades}}",
+                "available_upgrades": "Upgrades disponíveis",
+                "delete": {
+                    "button": "Excluir",
+                    "success": "Equipamento excluído com sucesso!",
+                    "error": "Falha ao excluir equipamento!"
+                }
+            },
+            "form": {
+                "title": "Novo equipamento",
+                "submit": "Salvar",
+                "name": {
+                    "label": "Nome",
+                    "required": "O nome não pode ser vazio!"
+                },
+                "weight": {
+                    "label": "Peso",
+                    "units": "{count, plural, =1 {unidade} other {unidades}}",
+                    "required": "O peso não pode ser vazio!",
+                    "must_be_number": "O peso deve ser um número!",
+                    "min_value": "O peso deve ser maior que 0!"
+                },
+                "cost": {
+                    "label": "Custo",
+                    "required": "O custo não pode ser vazio!",
+                    "must_be_number": "O custo deve ser um número!",
+                    "min_value": "O custo deve ser maior que 0!"
+                },
+                "description": {
+                    "label": "Descrição",
+                    "required": "A descrição não pode ser vazia!"
+                },
+                "notifications": {
+                    "success": "Equipamento salvo com sucesso!",
+                    "error": "Erro ao salvar equipamento"
+                }
             }
         },
         "equipment_upgrades": {
-            "title": "Upgrade de equipamentos",
+            "title": "Upgrades de equipamento",
             "no_data": "Sem dados!",
+            "new": "Adicionar",
             "details": {
                 "name": "Nome",
                 "cost": "Custo",
-                "description": "Descrição"
+                "description": "Descrição",
+                "delete": {
+                    "button": "Excluir",
+                    "success": "Upgrade de equipamento excluído com sucesso!",
+                    "error": "Falha ao excluir upgrade de equipamento!"
+                }
+            },
+            "form": {
+                "title": "Novo upgrade de equipamento",
+                "submit": "Salvar",
+                "name": {
+                    "label": "Nome",
+                    "required": "O nome não pode ser vazio!"
+                },
+                "description": {
+                    "label": "Descrição",
+                    "required": "A descrição não pode ser vazia!"
+                },
+                "cost": {
+                    "label": "Custo",
+                    "required": "O custo não pode ser vazio!",
+                    "must_be_number": "O custo deve ser um número!",
+                    "min_value": "O custo deve ser maior que 0!"
+                },
+                "notifications": {
+                    "success": "Upgrade de equipamento salvo com sucesso!",
+                    "error": "Erro ao salvar upgrade de equipamento"
+                }
             }
         },
         "talents": {
             "title": "Talentos",
             "no_data": "Sem dados!",
+            "new": "Adicionar",
             "details": {
                 "name": "Nome",
-                "trait": "Traço"
+                "trait": "Traço",
+                "delete": {
+                    "button": "Excluir",
+                    "success": "Talento excluído com sucesso!",
+                    "error": "Falha ao excluir talento!"
+                }
+            },
+            "form": {
+                "title": "Novo talento",
+                "submit": "Salvar",
+                "name": {
+                    "label": "Nome",
+                    "required": "O nome não pode ser vazio!"
+                },
+                "trait": {
+                    "label": "Traço",
+                    "required": "O traço não pode ser vazio!"
+                },
+                "notifications": {
+                    "success": "Talento salvo com sucesso!",
+                    "error": "Erro ao salvar talento"
+                }
+            }
+        },
+        "headquarters": {
+            "title": "Quartel general",
+            "no_data": "Sem dados!",
+            "new": "Adicionar",
+            "details": {
+                "name": "Nome",
+                "description": "Descrição",
+                "inventorySize": "Capacidade de inventário",
+                "containmentGridCapacity": "Capacidade da grade de contenção",
+                "cost": "Custo",
+                "units": "{count, plural, =1 {unidade} other {unidades}}",
+                "garageSize": "Tamanho da garagem",
+                "delete": {
+                    "button": "Excluir",
+                    "success": "Quartel general excluído com sucesso!",
+                    "error": "Falha ao excluir quartel general!"
+                }
+            },
+            "form": {
+                "title": "Novo quartel general",
+                "submit": "Salvar",
+                "name": {
+                    "label": "Nome",
+                    "required": "O nome não pode ser vazio!"
+                },
+                "description": {
+                    "label": "Descrição",
+                    "required": "A descrição não pode ser vazia!"
+                },
+                "inventorySize": {
+                    "label": "Capacidade de inventário",
+                    "units": "{count, plural, =1 {unidade} other {unidades}}",
+                    "required": "A capacidade de inventário não pode ser vazia!",
+                    "must_be_number": "A capacidade de inventário deve ser um número!",
+                    "min_value": "A capacidade de inventário de ve ser maior que 0!"
+                },
+                "containmentGridCapacity": {
+                    "label": "Capacidade da grade de contenção",
+                    "required": "A capacidade da grade de contenção não pode ser vazia!",
+                    "must_be_number": "A capacidade da grade de contenção deve ser um número!",
+                    "min_value": "A capacidade da grade de contenção deve ser 0 ou maior!"
+                },
+                "cost": {
+                    "label": "Custo",
+                    "required": "O custo não pode ser vazio!",
+                    "must_be_number": "O custo deve ser um número!",
+                    "min_value": "O custo deve ser maior que 0!"
+                },
+                "garageSize": {
+                    "label": "Tamanho da garagem",
+                    "required": "O tamanho da garagem não pode ser vazio!",
+                    "must_be_number": "O tamanho da garagem deve ser um número!",
+                    "min_value": "O tamanho da garagem deve ser maior que 0!"
+                },
+                "notifications": {
+                    "success": "Quartel general salvo com sucesso!",
+                    "error": "Erro ao salvar quartel general"
+                }
             }
         }
     }

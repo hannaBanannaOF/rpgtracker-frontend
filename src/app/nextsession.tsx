@@ -1,57 +1,49 @@
 'use client';
 
-import { TRpgKind } from "@/src/shared/enums";
 import { ListTile } from "@/src/components/listtile/listtile";
-import { Alert, Box, Flex, Loader, LoadingOverlay, Text, Title } from "@mantine/core";
+import { ReactQueryKeys, TRpgKind } from "@/src/shared/enums";
+import { Alert, Box, LoadingOverlay, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader } from "../components/loader/loader";
+import { useHttpClient } from "../shared/useHttpClient";
 
-type NextSession = {
-  slug: string;
-  name: string;
-  system: TRpgKind;
-  date: string;
-  dmed: boolean;
-};
-
-const getNextSession = async () => {
-  return await fetch('/core/api/me/sessions/next').then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.json();
-  }).then(json => {
-    return json;
-  }) as NextSession;
-}
-
-export function NextSession({ setLoadingHome } : { setLoadingHome: (state: boolean)=>void }) {
+export function NextSession({ setLoadingHomeAction } : { setLoadingHomeAction: (state: boolean) => void }) {
+  
+  const client = useHttpClient();
   const t = useTranslations('home.next_session');
   const format = useFormatter();
   const router = useRouter();
+
   const {data, isFetching } = useQuery({
-    queryKey: ['next-session'],
-    queryFn: () => getNextSession(),
+    queryKey: [ReactQueryKeys.Core.nextSession],
+    queryFn: async () => {
+      let data = await client.get('/core/api/me/sessions/next') as NextSession;
+      if (data == null) {
+        return Promise.reject();
+      }
+      return data;
+    },
   });
 
   return <>
     <Title order={2}>{t('title')}</Title>
-    {isFetching && !data && <Flex mt="md" justify={"center"}>
-      <Loader type="bars"/>  
-    </Flex>}
-    {data && <ListTile 
+    <Loader visible={isFetching && !data} />
+    {data && <Box pos={"relative"}>
+      <LoadingOverlay visible={isFetching} />
+      <ListTile 
         title={data.name} 
         icon={TRpgKind.getIcon(data.system)} 
         iconTooltipLabel={TRpgKind.getLabel(data.system)} 
         subTitle={format.dateTime(new Date(data.date), 'long')}
         badgeValue={data.dmed ? "DMed" : undefined}
         onClick={() => {
-          setLoadingHome(true);
+          setLoadingHomeAction(true);
           router.push(`/session/${data.slug}`);
         }}
-      />}
+      />
+    </Box>}
     {!isFetching && !data && <Alert variant="light" color="red" mt="md">
       <Text size="md">{t('no_data')}</Text>  
     </Alert>}

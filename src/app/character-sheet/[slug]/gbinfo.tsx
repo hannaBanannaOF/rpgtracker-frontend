@@ -1,99 +1,89 @@
-import { Flex, Grid, Loader, Paper, rem, Slider, Space, Text, Title } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { Loader } from "@/src/components/loader/loader";
+import { PaperCard } from "@/src/components/papercard/papercard";
+import { ReactQueryKeys } from "@/src/shared/enums";
+import { useHttpClient } from "@/src/shared/useHttpClient";
+import { Box, Flex, Group, LoadingOverlay, rem, Slider, Stack, Text, Title } from "@mantine/core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { TbCakeRoll } from "react-icons/tb";
 
-type GbCharacterSheetInfo = {
-  brains: number;
-  muscle: number;
-  moves: number;
-  cool: number;
-  brainsTalent: string;
-  muscleTalent: string;
-  movesTalent: string;
-  coolTalent: string;
-  browniePoints: number
-  goal: string;
-  residence: string;
-  phone: string;
-}
-
-const getGbInfo = async (id: number) => {
-  return await fetch(`/gb/api/sheet/${id}`).then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    }
-    return response.json();
-  }).then(json => {
-    return json;
-  }) as GbCharacterSheetInfo;
-}
-
-export function GbCharacterSheetInfo({slug, id} : {slug: string, id: number}) {
-  const {data, isFetching } = useQuery({
-      queryKey: ['character-sheet-info-gb', slug],
-      queryFn: () => getGbInfo(id),
-    });
-
+export function GbCharacterSheetInfo({slug, played} : {slug: string, played: boolean}) {
+ 
   const t = useTranslations('sheets.detail.gb');
+  const client = useHttpClient();
+  const queryClient = useQueryClient();
+  const [bp, setBp] = useState(0);
+
+  const {data, isFetching } = useQuery({
+    queryKey: [ReactQueryKeys.Ghostbusters.characterSheetInfo, slug],
+    queryFn: async () => {
+      let data = await client.get(`/gb/api/sheet/${slug}`) as GbCharacterSheetInfo;
+      setBp(data.browniePoints);
+      return data;
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({newValues}: { newValues: GbCharacterSheetInfo }) => {
+      return await client.put(`/gb/api/sheet/${slug}`, newValues);
+    },
+    onSuccess(data) {
+      queryClient.setQueryData([ReactQueryKeys.Ghostbusters.characterSheetInfo, slug], data)
+    }
+  })
 
   return <>
-      {isFetching && !data && <Flex mt="md" justify={"center"}>
-          <Loader type="bars"/>  
-      </Flex>}
-      {data && <>
-        <Grid>
-          <Grid.Col span={{ sm: 12, md:6 }}>
-          <Title order={3}>{t('personal_info')}</Title>
-            <Paper shadow="md" p="md" my="md" styles={{
-                root: {
-                    backgroundColor: 'var(--mantine-color-default-hover)',
-                }
-            }}>
-                <Text>{t('goal')}: {data.goal}</Text>
-                <Text>{t('residence')}: {data.residence}</Text>
-                <Text>{t('phone')}: {data.phone}</Text>
-            </Paper>
-          </Grid.Col>
-          <Grid.Col span={{ sm: 12, md:6 }}>
+    <Loader visible={isFetching && !data} />
+    {data && <Box pos={"relative"}>
+      <LoadingOverlay visible={updateMutation.isPending || isFetching} />
+      <Stack>
+        <Flex direction={{ base: "column", sm: "row" }} gap={"md"}>
+          <Stack style={{ flexGrow: 1 }}>
+            <Title order={3}>{t('personal_info')}</Title>
+            <PaperCard>
+              <Text>{t('goal')}: {data.goal}</Text>
+              <Text>{t('residence')}: {data.residence}</Text>
+              <Text>{t('phone')}: {data.phone}</Text>
+            </PaperCard>
+          </Stack>
+          <Stack style={{ flexGrow: 1 }}>
             <Title order={3}>{t('talents')}</Title>
-            <Paper shadow="md" p="md" my="md" styles={{
-                root: {
-                    backgroundColor: 'var(--mantine-color-default-hover)',
-                }
-            }}>
-                <Flex align={"end"}>
-                  <Title order={4}>{t('brains')}: {data.brains}</Title>
-                  <Space w="md" />
-                  <Text size="sm">({data.brainsTalent}: {data.brains+3})</Text>
-                </Flex>
-                <Flex align={"end"}>
-                  <Title order={4}>{t('muscle')}: {data.muscle}</Title>
-                  <Space w="md" />
-                  <Text size="sm">({data.muscleTalent}: {data.muscle+3})</Text>
-                </Flex>
-                <Flex align={"end"}>
-                  <Title order={4}>{t('moves')}: {data.moves}</Title>
-                  <Space w="md" />
-                  <Text size="sm">({data.movesTalent}: {data.moves+3})</Text>
-                </Flex>
-                <Flex align={"end"}>
-                  <Title order={4}>{t('cool')}: {data.cool}</Title>
-                  <Space w="md" />
-                  <Text size="sm">({data.coolTalent}: {data.cool+3})</Text>
-                </Flex>
-            </Paper>
-          </Grid.Col>
-        </Grid>
-        <Title order={3}>{t("brownie_points")}: {data.browniePoints}</Title>
-        <Space h={"sm"}/>
-        <Slider
-          thumbChildren={<TbCakeRoll size="1rem" />}
-          disabled
-          value={data.browniePoints}
-          thumbSize={26}
-          styles={{ thumb: { borderWidth: rem(2), padding: rem(3) } }}
-        />
-      </>}
+            <PaperCard>
+              <Group align={"end"}>
+                <Title order={4}>{t('brains')}: {data.brains}</Title>
+                <Text size="sm">({data.brainsTalent}: {data.brains+3})</Text>
+              </Group>
+              <Group align={"end"}>
+                <Title order={4}>{t('muscle')}: {data.muscle}</Title>
+                <Text size="sm">({data.muscleTalent}: {data.muscle+3})</Text>
+              </Group>
+              <Group align={"end"}>
+                <Title order={4}>{t('moves')}: {data.moves}</Title>
+                <Text size="sm">({data.movesTalent}: {data.moves+3})</Text>
+              </Group>
+              <Group align={"end"}>
+                <Title order={4}>{t('cool')}: {data.cool}</Title>
+                <Text size="sm">({data.coolTalent}: {data.cool+3})</Text>
+              </Group>
+            </PaperCard>
+          </Stack>
+        </Flex>
+        <Stack>
+          <Title order={3}>{t("brownie_points")}: {data.browniePoints}</Title>
+          <Slider
+            thumbChildren={<TbCakeRoll size="1rem" />}
+            value={bp}
+            onChange={setBp}
+            disabled={!played}
+            thumbSize={26}
+            styles={{ thumb: { borderWidth: rem(2), padding: rem(3) } }}
+            onChangeEnd={(value) => {
+              updateMutation.mutate({newValues: {...data, browniePoints: value}});
+            }}
+          />
+        </Stack>
+      </Stack>  
+    </Box>}
   </>;
 }
